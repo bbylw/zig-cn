@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@theme {
+  /* Color palette — cohesive dark with orange accent (saturation < 80%) */
+  --color-zig-orange: #f7a41d;        /* saturation ~75% */
+  --color-zig-orange-dark: #d4881a;
+  --color-zig-orange-light: #ffb84d;
+  --color-zig-bg: #11111a;            /* not pure black */
+  --color-zig-bg-elevated: #1a1a26;
+  --color-zig-surface: #1e1e2e;
+  --color-zig-border: #2a2a3e;
+  --color-zig-text: #c8c8d8;
+  --color-zig-text-muted: #8888a0;
+  --color-zig-text-bright: #f0f0f5;
+
+  /* Typography — distinctive, not Inter/Roboto/Arial */
+  --font-display: "Space Grotesk", "Noto Sans SC", system-ui, sans-serif;
+  --font-body: "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, Consolas, monospace;
+
+  /* Motion */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snap: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-zig-bg);
+  color: var(--color-zig-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Atmospheric background — subtle grid + noise, never flat solid */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(247, 164, 29, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 80% 100%, rgba(106, 79, 155, 0.03) 0%, transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  pointer-events: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-zig-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-zig-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a50;
+}
+
+/* Headlines — Space Grotesk, tight tracking */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-zig-text-bright);
+}
+
+/* Body — relaxed leading, max readable width */
+p {
+  line-height: 1.7;
+}
+
+/* Code block styling */
+pre {
+  font-family: var(--font-mono);
+  background-color: #13131f;
+  border: 1px solid var(--color-zig-border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #b8b8c8;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: rgba(247, 164, 29, 0.10);
+  color: var(--color-zig-orange-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(247, 164, 29, 0.25);
+  color: #fff;
+}
+
+/* Focus ring — visible outline, not box-shadow */
+:focus-visible {
+  outline: 2px solid var(--color-zig-orange);
+  outline-offset: 2px;
+}
+
+/* ── Motion System ── */
+
+/* Stagger entrance: set --index on children */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fade-up 0.6s var(--ease-smooth) forwards;
+  animation-delay: calc(var(--index, 0) * 80ms);
+}
+
+/* Perpetual subtle float for hero elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Shimmer for code block borders */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Tactile button feedback */
+.btn-tactile {
+  transition: transform 0.15s var(--ease-snap), background-color 0.2s, box-shadow 0.2s;
+}
+.btn-tactile:active {
+  transform: scale(0.98);
+}
+
+/* Card hover lift */
+.card-lift {
+  transition: transform 0.25s var(--ease-smooth), border-color 0.25s, background-color 0.25s;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-up,
+  .animate-float,
+  .animate-pulse {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .btn-tactile,
+  .card-lift {
+    transition: none;
+  }
+}
