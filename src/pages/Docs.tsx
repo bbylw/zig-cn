@@ -4,7 +4,6 @@ import {
   BookOpen,
   Terminal,
   Search,
-  ExternalLink,
   Code2,
   Cpu,
   Layers,
@@ -127,9 +126,8 @@ export default function Docs() {
                   <p className="text-xs leading-relaxed text-zinc-400">{doc.desc}</p>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-zinc-800/80 flex items-center gap-1.5 text-xs font-semibold text-zig-orange group-hover:text-zig-orange-light">
+                <div className="mt-5 pt-3 border-t border-zinc-800/80 flex items-center text-xs font-semibold text-zig-orange group-hover:text-zig-orange-light">
                   <span>立即访问</span>
-                  <ExternalLink className="h-3 w-3" />
                 </div>
               </a>
             )

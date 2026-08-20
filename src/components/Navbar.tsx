@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { Search, Menu, X, ExternalLink, Terminal, Download, Wrench, Users, BookOpen } from 'lucide-react'
+import { Search, Menu, X, Terminal, Download, Wrench, Users, BookOpen } from 'lucide-react'
 import ZigLogo from './ZigLogo'
 import SearchModal from './SearchModal'
 
@@ -107,7 +107,6 @@ export default function Navbar() {
             >
               <Terminal className="h-3.5 w-3.5 text-zig-orange" />
               <span>Codeberg</span>
-              <ExternalLink className="h-3 w-3 text-zinc-500" />
             </a>
 
             {/* Official Website */}
@@ -118,7 +117,6 @@ export default function Navbar() {
               className="hidden sm:flex items-center gap-1.5 rounded-xl border border-zig-orange/30 bg-zig-orange/10 px-3 py-1.5 text-xs font-semibold text-zig-orange-light transition-all hover:bg-zig-orange/20"
             >
               <span>ziglang.org</span>
-              <ExternalLink className="h-3 w-3" />
             </a>
 
             {/* Mobile menu toggle */}
@@ -164,7 +162,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-800 py-2 text-xs font-semibold text-zinc-200"
               >
-                <span>官方主站 ↗</span>
+                <span>官方主站</span>
               </a>
               <a
                 href="https://codeberg.org/ziglang/zig"
@@ -172,7 +170,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-800 py-2 text-xs font-semibold text-zinc-200"
               >
-                <span>Codeberg 仓库 ↗</span>
+                <span>Codeberg 仓库</span>
               </a>
             </div>
           </div>

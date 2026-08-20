@@ -6,7 +6,6 @@ import {
   AlertOctagon,
   Heart,
   Code2,
-  ExternalLink,
   MessageSquare,
   Bug,
 } from 'lucide-react'
@@ -64,10 +63,9 @@ export default function Contribute() {
               href="https://ziglang.org/community/"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-zig-orange hover:text-zig-orange-light"
+              className="mt-4 inline-flex items-center text-xs font-semibold text-zig-orange hover:text-zig-orange-light"
             >
               <span>访问官方社区入口</span>
-              <ExternalLink className="h-3 w-3" />
             </a>
           </div>
 
@@ -90,10 +88,9 @@ export default function Contribute() {
               href="https://ziglang.org/zsf/"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-rose-400 hover:text-rose-300"
+              className="mt-4 inline-flex items-center text-xs font-semibold text-rose-400 hover:text-rose-300"
             >
               <span>捐助 Zig Software Foundation</span>
-              <ExternalLink className="h-3 w-3" />
             </a>
           </div>
         </div>
@@ -300,8 +297,8 @@ type category enable zig.std`}
             <p className="text-xs text-zinc-400 leading-relaxed">
               难度适中、边界清晰，且对编译器深层机制了解要求较低的 issue 列表。
             </p>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-zig-orange group-hover:text-zig-orange-light">
-              <span>在 Codeberg 查看任务列表 →</span>
+            <span className="mt-4 inline-flex items-center text-xs font-semibold text-zig-orange group-hover:text-zig-orange-light">
+              <span>在 Codeberg 查看任务列表</span>
             </span>
           </a>
 

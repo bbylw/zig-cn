@@ -1,4 +1,4 @@
-import { ArrowUp, Heart, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react'
+import { ArrowUp, Heart, ShieldCheck, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ZigLogo from './ZigLogo'
 
@@ -81,10 +81,9 @@ export default function Footer() {
                   href="https://ziglang.org/download/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>官方下载列表</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  官方下载列表
                 </a>
               </li>
               <li>
@@ -92,10 +91,9 @@ export default function Footer() {
                   href="https://ziglang.org/documentation/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>语言参考文档 (LangRef)</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  语言参考文档 (LangRef)
                 </a>
               </li>
               <li>
@@ -103,10 +101,9 @@ export default function Footer() {
                   href="https://ziglang.org/learn/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>官方学习教程</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  官方学习教程
                 </a>
               </li>
               <li>
@@ -114,10 +111,9 @@ export default function Footer() {
                   href="https://codeberg.org/ziglang/zig"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>Codeberg 源码仓库</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  Codeberg 源码仓库
                 </a>
               </li>
               <li>
@@ -125,10 +121,9 @@ export default function Footer() {
                   href="https://github.com/ziglang/zig"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>GitHub 镜像仓库</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  GitHub 镜像仓库
                 </a>
               </li>
             </ul>
@@ -145,10 +140,9 @@ export default function Footer() {
                   href="https://ziglang.org/community/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>全球社区交流</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  全球社区交流
                 </a>
               </li>
               <li>
@@ -156,10 +150,9 @@ export default function Footer() {
                   href="https://ziggit.dev/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>Ziggit 论坛</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  Ziggit 论坛
                 </a>
               </li>
               <li>
@@ -167,10 +160,10 @@ export default function Footer() {
                   href="https://ziglang.org/zsf/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-amber-400 font-semibold transition-colors hover:text-amber-300"
+                  className="inline-flex items-center gap-1.5 text-amber-400 font-semibold transition-colors hover:text-amber-300"
                 >
                   <Heart className="h-3.5 w-3.5 fill-current text-rose-500" />
-                  <span>支持 Zig 软件基金会 (ZSF)</span>
+                  <span>支持 Zig 基金会 (ZSF)</span>
                 </a>
               </li>
               <li>
@@ -178,10 +171,9 @@ export default function Footer() {
                   href="https://codeberg.org/ziglang/zig/issues"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 transition-colors hover:text-zig-orange"
+                  className="block transition-colors hover:text-zig-orange"
                 >
-                  <span>提交 Bug 与 Issue</span>
-                  <ExternalLink className="h-3 w-3 text-zinc-600" />
+                  提交 Bug 与 Issue
                 </a>
               </li>
             </ul>

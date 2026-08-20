@@ -347,7 +347,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="btn-tactile flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800/80 px-8 py-3.5 text-sm font-semibold text-zinc-200 transition-all hover:border-zinc-500 hover:text-white"
               >
-                <span>访问 Ziggit 社区论坛 ↗</span>
+                <span>访问 Ziggit 社区论坛</span>
               </a>
             </div>
           </div>
