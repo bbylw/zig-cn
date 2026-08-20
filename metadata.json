@@ -1,0 +1,6 @@
+{
+  "name": "Zig 中文社区",
+  "description": "Zig 编程语言中文社区与学习资源门户",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

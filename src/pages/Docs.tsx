@@ -1,215 +1,251 @@
+import { useState } from 'react'
 import PageLayout from '../components/PageLayout'
-import CodeBlock from '../components/CodeBlock'
+import {
+  BookOpen,
+  Terminal,
+  Search,
+  ExternalLink,
+  Code2,
+  Cpu,
+  Layers,
+  Sparkles,
+  Globe,
+} from 'lucide-react'
 
 const docLinks = [
   {
-    title: '语言参考',
-    desc: 'Zig 语言的完整参考手册，包含语法、类型系统、控制流等所有语言特性的详细说明。',
-    url: 'https://ziglang.org/documentation/',
-    icon: (
-      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
+    title: '语言官方参考手册 (LangRef)',
+    desc: 'Zig 语言完整的权威参考，涵盖语法、类型系统、控制流、内存模型及编译期机制的详尽定义。',
+    url: 'https://ziglang.org/documentation/master/',
+    badge: '权威规范',
+    icon: BookOpen,
   },
   {
-    title: '标准库文档',
-    desc: '通过运行 zig std 在浏览器中查看交互式标准库文档。可搜索、可浏览所有模块。',
+    title: '标准库交互式文档 (zig std)',
+    desc: '本地运行 zig std 或在线浏览 master 标准库 API。可实时模糊搜索所有模块、函数与结构体。',
     url: 'https://ziglang.org/documentation/master/std/',
-    icon: (
-      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-      </svg>
-    ),
+    badge: 'API 检索',
+    icon: Layers,
   },
   {
-    title: '下载页面',
-    desc: '根据你所使用的 Zig 版本点击相应链接，查阅对应的发行说明、语言参考或标准库文档。',
-    url: 'https://ziglang.org/download',
-    icon: (
-      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-      </svg>
-    ),
-  },
-  {
-    title: '入门指南',
-    desc: '从零开始学习 Zig，包括安装、第一个程序、基本概念和进阶主题。',
+    title: '官方学习中心 (Learn Zig)',
+    desc: '由浅入深的官方教程，从安装、Hello World 到高级编译系统构建。',
     url: 'https://ziglang.org/learn/',
-    icon: (
-      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
+    badge: '官方教程',
+    icon: Sparkles,
+  },
+  {
+    title: 'Zig Guide (社区精编指南)',
+    desc: '社区广受好评的循序渐进结构化学习手册，适合初学者系统性入门。',
+    url: 'https://zig.guide/',
+    badge: '循序渐进',
+    icon: Code2,
+  },
+  {
+    title: 'Ziggit 社区论坛',
+    desc: '全球 Zig 核心开发者与爱好者的问答讨论聚集地，遇到任何问题均可在此获得解答。',
+    url: 'https://ziggit.dev/',
+    badge: '问答交流',
+    icon: Globe,
+  },
+  {
+    title: 'Learning Zig (Karl Seguin)',
+    desc: '高质量的实战手记，深入浅出讲解指针、内存分配器和惯用法。',
+    url: 'https://www.openmymind.net/learning_zig/',
+    badge: '实战心得',
+    icon: Cpu,
   },
 ]
 
 const commonCommands = [
-  { cmd: 'zig init', desc: '在当前目录初始化一个新的 Zig 项目' },
-  { cmd: 'zig build', desc: '使用 build.zig 构建项目' },
-  { cmd: 'zig run <file>', desc: '编译并运行一个 Zig 源文件' },
-  { cmd: 'zig test <file>', desc: '运行一个 Zig 文件中的测试' },
-  { cmd: 'zig fmt <path>', desc: '格式化 Zig 源代码' },
-  { cmd: 'zig std', desc: '启动本地 HTTP 服务器查看标准库文档' },
-  { cmd: 'zig build -h', desc: '查看构建系统的可用选项' },
-  { cmd: 'zig cc <file>', desc: '使用 Zig 作为 C 编译器' },
-  { cmd: 'zig c++ <file>', desc: '使用 Zig 作为 C++ 编译器' },
-  { cmd: 'zig translate-c <file>', desc: '将 C 源代码翻译为 Zig 源代码' },
+  { cmd: 'zig init', desc: '在当前空目录下初始化全新的 Zig 项目骨架 (含 build.zig)', category: '项目' },
+  { cmd: 'zig build', desc: '根据 build.zig 脚本编译构建整个项目', category: '构建' },
+  { cmd: 'zig build run', desc: '编译并直接运行主程序产物', category: '运行' },
+  { cmd: 'zig run <file.zig>', desc: '单文件快速编译并运行，适合算法与小脚本测试', category: '运行' },
+  { cmd: 'zig test <file.zig>', desc: '运行指定文件或项目内的全部内联测试套件', category: '测试' },
+  { cmd: 'zig fmt .', desc: '递归自动格式化当前目录下的所有 Zig 源码文件', category: '格式化' },
+  { cmd: 'zig std', desc: '启动本地高性能 HTTP 服务，在浏览器打开交互式标准库文档', category: '文档' },
+  { cmd: 'zig cc <file.c>', desc: '使用 Zig 作为零配置、全功能的现代 C 语言编译器', category: 'C/C++' },
+  { cmd: 'zig c++ <file.cpp>', desc: '使用 Zig 作为现代 C++ 语言编译器', category: 'C/C++' },
+  { cmd: 'zig translate-c <file.h>', desc: '自动将 C 头文件与源代码翻译为等效的 Zig 源代码', category: 'C/C++' },
+  { cmd: 'zig targets', desc: '打印所有支持的 CPU 架构、OS 与 ABI 目标矩阵', category: '工具' },
+  { cmd: 'zig zen', desc: '打印 Zig 语言设计核心禅语 (Zen of Zig)', category: '哲学' },
 ]
 
 export default function Docs() {
+  const [query, setQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('全部')
+
+  const categories = ['全部', '项目', '构建', '运行', '测试', '格式化', 'C/C++', '工具']
+
+  const filteredCommands = commonCommands.filter((item) => {
+    const matchCat = selectedCategory === '全部' || item.category === selectedCategory
+    const matchText =
+      item.cmd.toLowerCase().includes(query.toLowerCase()) ||
+      item.desc.toLowerCase().includes(query.toLowerCase())
+    return matchCat && matchText
+  })
+
   return (
     <PageLayout
-      title="文档与资源"
-      description="Zig 的官方文档、学习资源和常用命令参考。"
+      title="文档、命令与生态资源"
+      description="Zig 官方参考手册、交互式标准库检索、全套常用命令行速查与中文开发者学习路径。"
+      badge="开发者速查"
     >
-      {/* Official Documentation */}
-      <section className="mb-12">
-        <h2 className="font-display mb-6 text-2xl font-semibold text-zig-text-bright">官方文档</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {docLinks.map((doc) => (
-            <a
-              key={doc.title}
-              href={doc.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group rounded-xl border border-zig-border bg-zig-surface/40 p-6 transition-all hover:border-zig-orange/40 hover:bg-zig-surface/70"
+      {/* ── Official & Community Learning Grid ── */}
+      <section className="mb-14">
+        <div className="flex items-center gap-2 mb-6">
+          <BookOpen className="h-6 w-6 text-zig-orange" />
+          <h2 className="font-display text-2xl font-bold text-zinc-100">
+            官方与社区学习资源
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {docLinks.map((doc) => {
+            const Icon = doc.icon
+            return (
+              <a
+                key={doc.title}
+                href={doc.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="card-lift group flex flex-col justify-between rounded-2xl border border-zinc-700/80 bg-[#161626] p-6 transition-all hover:border-zinc-500 hover:bg-[#1a1a2e]"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 text-zig-orange group-hover:bg-zig-orange group-hover:text-zinc-950 transition-colors">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 font-mono text-[11px] text-zinc-300">
+                      {doc.badge}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-base font-bold text-zinc-100 mb-2">
+                    {doc.title}
+                  </h3>
+                  <p className="text-xs leading-relaxed text-zinc-400">{doc.desc}</p>
+                </div>
+
+                <div className="mt-5 pt-3 border-t border-zinc-800/80 flex items-center gap-1.5 text-xs font-semibold text-zig-orange group-hover:text-zig-orange-light">
+                  <span>立即访问</span>
+                  <ExternalLink className="h-3 w-3" />
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ── Common Commands Reference (Interactive Filter) ── */}
+      <section className="mb-14">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-2">
+            <Terminal className="h-6 w-6 text-zig-orange" />
+            <h2 className="font-display text-2xl font-bold text-zinc-100">
+              CLI 常用命令速查表
+            </h2>
+          </div>
+
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+            <input
+              type="text"
+              placeholder="搜索命令 (如 fmt, cc, test)..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full rounded-xl border border-zinc-700 bg-zinc-900/90 pl-9 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-zig-orange focus:outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Category Filters */}
+        <div className="flex items-center gap-1.5 border-b border-zinc-800 pb-3 mb-4 overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
+                selectedCategory === cat
+                  ? 'bg-zig-orange text-zinc-950 font-semibold shadow'
+                  : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+              }`}
             >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-zig-orange/10 text-zig-orange">
-                {doc.icon}
-              </div>
-              <h3 className="font-display text-lg font-semibold text-zig-text-bright">{doc.title}</h3>
-              <p className="mt-2 text-sm text-zig-text-muted">{doc.desc}</p>
-              <span className="mt-3 inline-block text-sm font-medium text-zig-orange group-hover:text-zig-orange-light">
-                查看文档 ↗
-              </span>
-            </a>
+              {cat}
+            </button>
           ))}
         </div>
-      </section>
 
-      {/* Local Documentation */}
-      <section className="mb-12">
-        <h2 className="font-display mb-4 text-2xl font-semibold text-zig-text-bright">本地查看文档</h2>
-        <p className="mb-4 text-zig-text-muted">
-          如果你已经安装了 Zig，可以直接在本地查看文档：
-        </p>
-        <div className="space-y-4">
-          <div className="rounded-lg border border-zig-border bg-zig-surface/40 p-4">
-            <h4 className="font-display mb-2 font-semibold text-zig-text-bright">查看标准库文档</h4>
-            <p className="mb-3 text-sm text-zig-text-muted">
-              运行以下命令会在浏览器中打开一个交互式、可搜索的标准库文档页面：
-            </p>
-            <CodeBlock lang="bash">zig std</CodeBlock>
-          </div>
-          <div className="rounded-lg border border-zig-border bg-zig-surface/40 p-4">
-            <h4 className="font-display mb-2 font-semibold text-zig-text-bright">查看语言参考</h4>
-            <p className="mb-3 text-sm text-zig-text-muted">
-              如果你使用的是 Zig 的某个发行版本，语言参考位于：
-            </p>
-            <CodeBlock lang="text">doc/langref.html</CodeBlock>
-            <p className="mt-2 text-sm text-zig-text-muted">
-              也可以在源码仓库中查看：<a href="https://codeberg.org/ziglang/zig/src/branch/master/doc/langref.html.in" target="_blank" rel="noopener noreferrer" className="text-zig-orange hover:text-zig-orange-light">doc/langref.html.in ↗</a>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Common Commands */}
-      <section className="mb-12">
-        <h2 className="font-display mb-4 text-2xl font-semibold text-zig-text-bright">常用命令参考</h2>
-        <div className="overflow-hidden rounded-xl border border-zig-border">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-zig-border bg-zig-surface/70">
-              <tr>
-                <th className="px-4 py-3 font-semibold text-zig-text-bright">命令</th>
-                <th className="px-4 py-3 font-semibold text-zig-text-bright">说明</th>
-              </tr>
-            </thead>
-            <tbody>
-              {commonCommands.map((item, i) => (
-                <tr key={item.cmd} className={i % 2 === 0 ? 'bg-zig-surface/30' : ''}>
-                  <td className="border-b border-zig-border/50 px-4 py-3">
-                    <code className="text-zig-orange-light">{item.cmd}</code>
-                  </td>
-                  <td className="border-b border-zig-border/50 px-4 py-3 text-zig-text-muted">{item.desc}</td>
+        {/* Table */}
+        <div className="overflow-hidden rounded-2xl border border-zinc-700/80 bg-[#141422] shadow-xl">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead className="border-b border-zinc-800 bg-[#181828]">
+                <tr>
+                  <th className="px-5 py-3.5 font-bold text-zinc-200">命令行指令</th>
+                  <th className="px-5 py-3.5 font-semibold text-zinc-300">分类</th>
+                  <th className="px-5 py-3.5 font-semibold text-zinc-300">功能说明</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-800">
+                {filteredCommands.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="px-5 py-8 text-center text-zinc-500 text-xs">
+                      没有匹配到任何相关命令。
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCommands.map((item) => (
+                    <tr key={item.cmd} className="hover:bg-zinc-800/40 transition-colors">
+                      <td className="px-5 py-3.5 font-mono text-amber-300 font-semibold whitespace-nowrap">
+                        <code>{item.cmd}</code>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <span className="rounded bg-zinc-800/80 px-2 py-0.5 font-mono text-[11px] text-zinc-400 border border-zinc-700/60">
+                          {item.category}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-zinc-300 text-xs sm:text-sm">
+                        {item.desc}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      {/* Learning Resources */}
-      <section className="mb-12">
-        <h2 className="font-display mb-4 text-2xl font-semibold text-zig-text-bright">学习资源</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <a
-            href="https://ziglang.org/learn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-xl border border-zig-border bg-zig-surface/40 p-6 transition-all hover:border-zig-orange/40"
-          >
-            <h3 className="font-display font-semibold text-zig-text-bright">官方学习中心</h3>
-            <p className="mt-2 text-sm text-zig-text-muted">
-              包含入门教程、示例代码和进阶指南。
-            </p>
-          </a>
-          <a
-            href="https://zig.guide/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-xl border border-zig-border bg-zig-surface/40 p-6 transition-all hover:border-zig-orange/40"
-          >
-            <h3 className="font-display font-semibold text-zig-text-bright">Zig Guide</h3>
-            <p className="mt-2 text-sm text-zig-text-muted">
-              社区维护的循序渐进学习指南。
-            </p>
-          </a>
-          <a
-            href="https://ziggit.dev/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-xl border border-zig-border bg-zig-surface/40 p-6 transition-all hover:border-zig-orange/40"
-          >
-            <h3 className="font-display font-semibold text-zig-text-bright">Ziggit 社区论坛</h3>
-            <p className="mt-2 text-sm text-zig-text-muted">
-              Zig 开发者讨论和问答社区。
-            </p>
-          </a>
-          <a
-            href="https://www.openmymind.net/learning_zig/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-xl border border-zig-border bg-zig-surface/40 p-6 transition-all hover:border-zig-orange/40"
-          >
-            <h3 className="font-display font-semibold text-zig-text-bright">Learning Zig</h3>
-            <p className="mt-2 text-sm text-zig-text-muted">
-              Karl Seguin 编写的 Zig 学习笔记。
-            </p>
-          </a>
-        </div>
-      </section>
-
-      {/* About */}
-      <section>
-        <h2 className="font-display mb-4 text-2xl font-semibold text-zig-text-bright">关于本站</h2>
-        <div className="rounded-xl border border-zig-border bg-zig-surface/40 p-6">
-          <p className="text-zig-text-muted">
-            本站是 Zig 编程语言的中文社区站点，内容基于 Zig 官方 README 文档翻译整理。
-          </p>
-          <p className="mt-4 text-zig-text-muted">
-            Zig 是一种用于编写<strong className="text-zig-orange-light">健壮</strong>、
-            <strong className="text-zig-orange-light">最优</strong>且
-            <strong className="text-zig-orange-light">可复用</strong>软件的通用编程语言及工具链。
-            它由 Andrew Kelley 创建，采用 BDFN 治理模式，是自由开源软件（FOSS）。
-          </p>
-          <p className="mt-4 text-zig-text-muted">
-            官方网站：<a href="https://ziglang.org/" target="_blank" rel="noopener noreferrer" className="text-zig-orange hover:text-zig-orange-light">https://ziglang.org/ ↗</a>
-          </p>
-          <p className="mt-2 text-zig-text-muted">
-            源码仓库：<a href="https://codeberg.org/ziglang/zig" target="_blank" rel="noopener noreferrer" className="text-zig-orange hover:text-zig-orange-light">https://codeberg.org/ziglang/zig ↗</a>
-          </p>
+      {/* ── Zen of Zig ── */}
+      <section className="mb-14">
+        <div className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-[#161626] to-[#12121e] p-6 sm:p-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="h-5 w-5 text-zig-orange" />
+            <h3 className="font-display text-xl font-bold text-zinc-100">
+              Zen of Zig (Zig 语言设计禅语)
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-400 font-mono leading-relaxed">
+            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+              • 没有任何隐式控制流 (No hidden control flow)
+            </div>
+            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+              • 没有任何隐式内存分配 (No hidden memory allocations)
+            </div>
+            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+              • 语言设计无垃圾回收机制 (No garbage collector)
+            </div>
+            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+              • 能够与 C 语言无缝自由互操作 (C interop without FFI glue)
+            </div>
+            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+              • 编译期与运行时采用同一种语法 (Comptime everywhere)
+            </div>
+            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+              • 显式优于隐式，简单优于复杂 (Explicit is better than implicit)
+            </div>
+          </div>
         </div>
       </section>
     </PageLayout>

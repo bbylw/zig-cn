@@ -1,219 +1,318 @@
 import { Link } from 'react-router-dom'
+import {
+  ShieldCheck,
+  Zap,
+  Cpu,
+  Globe,
+  Terminal,
+  ArrowRight,
+  Download,
+  BookOpen,
+  Sparkles,
+  Layers,
+  Code2,
+  CheckCircle2,
+} from 'lucide-react'
+import ZigCodePlayground from '../components/ZigCodePlayground'
+import TargetCompilerExplorer from '../components/TargetCompilerExplorer'
 
 const features = [
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-    title: '健壮性',
-    desc: '明确的行为，没有隐藏的控制流、没有隐藏的内存分配。错误处理是显式的，编译器强制你处理所有错误路径。',
+    icon: ShieldCheck,
+    title: '极其纯粹的健壮性 (Robustness)',
+    desc: '没有隐藏的控制流、没有隐藏的内存分配、没有预处理器宏。错误处理是显式值，编译器严格强制你处理所有潜在失败路径。',
+    badge: '显式设计',
     span: 'lg:col-span-2',
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-    title: '最优性能',
-    desc: '直接与 C 竞争——没有运行时开销，没有垃圾回收。生成的代码媲美手写 C。',
-    span: '',
+    icon: Zap,
+    title: '最优性能 (Optimal)',
+    desc: '直接与 C 竞争——零运行时开销，没有垃圾回收 (No GC)。生成的机器码媲美甚至超越手写 C 语言。',
+    badge: '零抽象开销',
+    span: 'lg:col-span-1',
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-      </svg>
-    ),
-    title: '编译时元编程',
-    desc: 'comptime 在编译期执行任意 Zig 代码生成代码，泛型与类型推导是语言的一部分而非额外特性。',
-    span: '',
+    icon: Cpu,
+    title: 'Comptime 编译期元编程',
+    desc: 'comptime 关键字允许你在编译期直接执行普通 Zig 代码生成类型与逻辑。无需复杂的宏或抽象语法树转换。',
+    badge: '一等公民类型',
+    span: 'lg:col-span-1',
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    title: '交叉编译',
-    desc: '开箱即用的交叉编译，支持数十种目标平台。自带所有 libc 交叉编译支持，无需额外工具链。',
+    icon: Globe,
+    title: '开挂级交叉编译 (Cross-Compilation)',
+    desc: '开箱即用的跨架构交叉编译。Zig 内置主流系统的 libc 支持与底层链接器，一行命令即可为 Windows, macOS, Linux, WASI 生成独立二进制。',
+    badge: '自带全套 libc',
     span: 'lg:col-span-2',
   },
 ]
 
-const codeExample = `const std = @import("std");
-
-pub fn main() !void {
-    const stdout = std.io.getStdOut().writer();
-    try stdout.print("Hello, {s}!\\n", .{"Zig"});
-
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
-    var list = std.ArrayList(u8).init(allocator);
-    defer list.deinit();
-    try list.appendSlice("健壮且最优");
-    try stdout.print("{s}\\n", .{list.items});
-}`
+const comparisonData = [
+  {
+    feature: '内存安全哲学',
+    zig: '显式分配器 + 运行时边界与溢出检查 + defer',
+    c: '手动管理，无内置越界/未定义行为保护',
+    cpp: 'RAII + 智能指针 (复杂的所有权隐式调用)',
+    rust: '编译期 Borrow Checker (所有权与生命周期标注)',
+  },
+  {
+    feature: '元编程能力',
+    zig: 'comptime (在编译期直接运行常规 Zig 代码)',
+    c: '文本预处理器宏 (#define / #ifdef)',
+    cpp: '模板元编程 (Templates / SFINAE / Concepts)',
+    rust: '声明式与过程式宏 (Macro 语法扩展)',
+  },
+  {
+    feature: 'C 语言互操作',
+    zig: '原生 @cImport 直接解析 C 头文件，并作为 C 编译器',
+    c: '原生',
+    cpp: 'extern "C" 兼容',
+    rust: '通过 bindgen / FFI 胶水代码与 unsafe 块',
+  },
+  {
+    feature: '交叉编译体验',
+    zig: '开箱即用，自带所有目标平台的 libc 和链接器',
+    c: '需费力安装对应 target 的交叉编译工具链',
+    cpp: '极为复杂，依赖多套系统库与 sysroot',
+    rust: '需 rustup target add，且仍依赖外部 C 链接器',
+  },
+]
 
 export default function Home() {
   return (
-    <div>
-      {/* ── Hero — asymmetric, left-weighted ── */}
-      <section className="relative overflow-hidden pt-32 pb-24">
-        <div className="absolute left-0 top-0 -z-10 h-[500px] w-[500px] rounded-full bg-zig-orange/8 blur-[120px]" />
-        <div className="absolute right-0 bottom-0 -z-10 h-[400px] w-[400px] rounded-full bg-zig-orange/4 blur-[100px]" />
+    <div className="relative overflow-hidden">
+      {/* ── Hero Section ── */}
+      <section className="relative pt-28 pb-16 lg:pt-36 lg:pb-24">
+        {/* Ambient lighting glows */}
+        <div className="absolute left-1/2 top-10 -z-10 -translate-x-1/2 h-[550px] w-full max-w-7xl rounded-full bg-gradient-to-b from-zig-orange/15 via-amber-500/5 to-transparent blur-[130px] pointer-events-none" />
+        <div className="absolute right-0 top-1/4 -z-10 h-[380px] w-[380px] rounded-full bg-indigo-600/5 blur-[120px] pointer-events-none" />
 
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
-          {/* Left — 7 cols */}
-          <div className="lg:col-span-7">
-            <div className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-zig-orange/20 bg-zig-orange/5 px-3 py-1 text-xs font-medium text-zig-orange-light" style={{ ['--index' as string]: 0 }}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Pill Tag */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-zig-orange/30 bg-zig-orange/10 px-4 py-1.5 text-xs font-semibold text-zinc-100 shadow-sm backdrop-blur-md">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-zig-orange opacity-60" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-zig-orange opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-zig-orange" />
               </span>
-              通用编程语言及工具链
+              <span>Zig 0.14+ 现代通用系统级编程语言及工具链</span>
             </div>
 
-            <h1 className="animate-fade-up mt-6 text-5xl font-bold tracking-tighter text-zig-text-bright sm:text-6xl lg:text-7xl" style={{ ['--index' as string]: 1 }}>
-              编写<span className="text-zig-orange">健壮</span>软件
+            {/* Main Headline */}
+            <h1 className="mt-8 font-display text-5xl font-extrabold tracking-tight text-zinc-100 sm:text-6xl lg:text-7xl">
+              编写<span className="text-zig-orange">健壮</span>、
+              <span className="text-zig-orange-light">最优</span>
               <br />
-              的正确方式
+              且<span className="text-amber-400">可复用</span>软件的正确方式
             </h1>
 
-            <p className="animate-fade-up mt-6 max-w-[55ch] text-lg leading-relaxed text-zig-text-muted" style={{ ['--index' as string]: 2 }}>
-              Zig 是一种用于编写<span className="font-semibold text-zig-orange-light">最优</span>且
-              <span className="font-semibold text-zig-orange-light">可复用</span>软件的通用编程语言。
-              没有隐藏的控制流，没有隐藏的内存分配，没有垃圾回收——只有你和你对代码的完全掌控。
+            {/* Sub-headline */}
+            <p className="mt-6 text-lg sm:text-xl leading-relaxed text-zinc-400 max-w-3xl mx-auto">
+              Zig 是一种通用的编程语言和用于维护健壮、最优且可复用软件的工具链。
+              <strong className="text-zinc-200"> 没有隐藏的控制流</strong>、
+              <strong className="text-zinc-200"> 没有隐藏的内存分配</strong>、
+              <strong className="text-zinc-200"> 没有垃圾回收</strong>——赋予程序员最纯粹、最可靠的掌控力。
             </p>
 
-            <div className="animate-fade-up mt-8 flex flex-col gap-3 sm:flex-row" style={{ ['--index' as string]: 3 }}>
+            {/* Action Buttons */}
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
               <Link
                 to="/install"
-                className="btn-tactile rounded-xl bg-zig-orange px-7 py-3.5 text-sm font-semibold text-zig-bg shadow-lg shadow-zig-orange/15 transition-all hover:bg-zig-orange-light"
+                className="btn-tactile flex items-center gap-2 rounded-xl bg-zig-orange px-8 py-4 text-sm font-bold text-zinc-950 shadow-xl shadow-zig-orange/20 transition-all hover:bg-zig-orange-light hover:scale-105 active:scale-95"
               >
-                获取 Zig 工具链
+                <Download className="h-4 w-4" />
+                <span>获取 Zig 工具链 (v0.14)</span>
               </Link>
               <Link
                 to="/docs"
-                className="btn-tactile rounded-xl border border-zig-border bg-zig-surface/50 px-7 py-3.5 text-sm font-semibold text-zig-text transition-all hover:border-zig-orange/40 hover:text-zig-text-bright"
+                className="btn-tactile flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900/80 px-8 py-4 text-sm font-semibold text-zinc-200 backdrop-blur-sm transition-all hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
               >
-                浏览语言文档
+                <BookOpen className="h-4 w-4 text-zig-orange" />
+                <span>查阅中文文档与速查</span>
               </Link>
+            </div>
+
+            {/* Quick Feature stats */}
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-zinc-400 font-mono">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span>零运行时隐式调用</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span>完整 C/C++ 编译器替代品</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span>单二进制绿色分发</span>
+              </div>
             </div>
           </div>
 
-          {/* Right — 5 cols, code preview */}
-          <div className="animate-fade-up lg:col-span-5" style={{ ['--index' as string]: 4 }}>
-            <div className="relative">
-              <div className="absolute -inset-2 -z-10 rounded-2xl bg-gradient-to-br from-zig-orange/10 to-transparent blur-xl" />
-              <div className="rounded-xl border border-zig-border bg-zig-bg-elevated/80 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5 border-b border-zig-border px-4 py-3">
-                  <span className="h-3 w-3 rounded-full bg-red-500/40" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-500/40" />
-                  <span className="h-3 w-3 rounded-full bg-green-500/40" />
-                  <span className="ml-2 font-mono text-xs text-zig-text-muted">hello.zig</span>
-                </div>
-                <pre className="rounded-t-none border-0">
-                  <code>{codeExample}</code>
-                </pre>
-              </div>
-            </div>
+          {/* Interactive Code Playground */}
+          <div className="mt-16">
+            <ZigCodePlayground />
           </div>
         </div>
       </section>
 
-      {/* ── Features — bento grid, not 3-col equal rows ── */}
+      {/* ── Features Bento Grid ── */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mb-12 max-w-2xl">
-          <h2 className="font-display text-3xl font-bold tracking-tight text-zig-text-bright sm:text-4xl">
-            为什么选择 Zig
+        <div className="mb-12 text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 mb-3">
+            <Sparkles className="h-3.5 w-3.5 text-zig-orange" />
+            核心设计哲学
+          </div>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            为什么越来越多系统工程师选择 Zig？
           </h2>
-          <p className="mt-3 text-zig-text-muted">
-            每一个设计决策都指向同一个目标：让程序员对他们写的代码拥有完全的掌控。
+          <p className="mt-3 text-sm sm:text-base text-zinc-400">
+            每一个设计决策都聚焦于一个目标：消除任何让人意外的隐藏行为，让代码的运行逻辑 100% 清晰可预测。
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, i) => (
-            <div
-              key={feature.title}
-              className={`animate-fade-up card-lift group rounded-xl border border-zig-border bg-zig-surface/40 p-6 hover:border-zig-orange/30 hover:bg-zig-surface/70 ${feature.span}`}
-              style={{ ['--index' as string]: i + 5 }}
-            >
-              <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-zig-orange/10 text-zig-orange transition-colors group-hover:bg-zig-orange/15">
-                {feature.icon}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature) => {
+            const Icon = feature.icon
+            return (
+              <div
+                key={feature.title}
+                className={`card-lift group relative overflow-hidden rounded-2xl border border-zinc-700/70 bg-[#161626] p-7 transition-all hover:border-zinc-500 hover:bg-[#1a1a2e] ${feature.span}`}
+              >
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zig-orange/10 text-zig-orange transition-colors group-hover:bg-zig-orange/20">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <span className="rounded-full bg-zinc-800/80 px-3 py-1 font-mono text-xs font-semibold text-zinc-300 border border-zinc-700/60">
+                    {feature.badge}
+                  </span>
+                </div>
+                <h3 className="font-display text-xl font-bold text-zinc-100 mb-2.5">
+                  {feature.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-zinc-400">{feature.desc}</p>
               </div>
-              <h3 className="font-display mb-2 text-lg font-semibold text-zig-text-bright">{feature.title}</h3>
-              <p className="text-sm leading-relaxed text-zig-text-muted">{feature.desc}</p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
-      {/* ── Quick Links — split asymmetric, not 3 equal cards ── */}
+      {/* ── Interactive Target Compiler Explorer ── */}
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <TargetCompilerExplorer />
+      </section>
+
+      {/* ── Deep Comparison Table (Zig vs C vs C++ vs Rust) ── */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mb-12 text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 mb-3">
+            <Layers className="h-3.5 w-3.5 text-zig-orange" />
+            横向对比
+          </div>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            Zig 与其他系统编程语言的哲学差异
+          </h2>
+          <p className="mt-3 text-sm text-zinc-400">
+            理解 Zig 在语言谱系中的精准定位：比 C 更安全更现代化，比 C++ / Rust 更简洁直观。
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-zinc-700/80 bg-[#141422] shadow-2xl">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead className="border-b border-zinc-800 bg-[#181828]">
+                <tr>
+                  <th className="px-5 py-4 font-bold text-zinc-200">维度 / 特性</th>
+                  <th className="px-5 py-4 font-bold text-zig-orange bg-zig-orange/10">
+                    ⚡ Zig (本语言)
+                  </th>
+                  <th className="px-5 py-4 font-semibold text-zinc-300">C 语言</th>
+                  <th className="px-5 py-4 font-semibold text-zinc-300">C++</th>
+                  <th className="px-5 py-4 font-semibold text-zinc-300">Rust</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-800">
+                {comparisonData.map((row, idx) => (
+                  <tr key={idx} className="hover:bg-zinc-800/30 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-zinc-200 whitespace-nowrap">
+                      {row.feature}
+                    </td>
+                    <td className="px-5 py-4 font-medium text-emerald-300 bg-zig-orange/5">
+                      {row.zig}
+                    </td>
+                    <td className="px-5 py-4 text-zinc-400">{row.c}</td>
+                    <td className="px-5 py-4 text-zinc-400">{row.cpp}</td>
+                    <td className="px-5 py-4 text-zinc-400">{row.rust}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Quick Nav Hub & Cards ── */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Large card — 7 cols */}
+          {/* Main big Card (7 cols) */}
           <Link
             to="/install"
-            className="animate-fade-up card-lift group relative overflow-hidden rounded-2xl border border-zig-border bg-zig-surface/40 p-8 hover:border-zig-orange/30 lg:col-span-7"
-            style={{ ['--index' as string]: 0 }}
+            className="card-lift group relative overflow-hidden rounded-2xl border border-zinc-700 bg-[#161626] p-8 lg:col-span-7 transition-all hover:border-zinc-500 hover:bg-[#1a1a2e]"
           >
-            <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-zig-orange/5 blur-3xl transition-opacity group-hover:opacity-70" />
+            <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-zig-orange/10 blur-3xl transition-opacity group-hover:opacity-100" />
             <div className="relative">
               <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-zig-orange/10 text-zig-orange">
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
+                <Download className="h-6 w-6" />
               </div>
-              <h3 className="font-display text-2xl font-bold text-zig-text-bright">安装 Zig</h3>
-              <p className="mt-2 max-w-[45ch] text-sm leading-relaxed text-zig-text-muted">
-                下载预编译二进制文件——解压即用，无需全局安装。或通过 Homebrew、pacman、dnf 等包管理器一键安装。
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-zinc-100">
+                获取 Zig 编译器与工具链
+              </h3>
+              <p className="mt-3 max-w-[48ch] text-sm sm:text-base leading-relaxed text-zinc-400">
+                支持全平台预编译单二进制包：macOS（Apple Silicon / Intel）、Linux（x86_64、aarch64、riscv64）及 Windows。解压即用，无需任何繁琐全局安装。
               </p>
-              <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-zig-orange transition-transform group-hover:translate-x-1">
-                查看安装指南 →
-              </span>
+              <div className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-zig-orange transition-transform group-hover:translate-x-1">
+                <span>进入安装向导与包管理器指令</span>
+                <ArrowRight className="h-4 w-4" />
+              </div>
             </div>
           </Link>
 
-          {/* Right column — 5 cols, stacked */}
+          {/* Right column (5 cols stacked) */}
           <div className="flex flex-col gap-6 lg:col-span-5">
             <Link
               to="/build"
-              className="animate-fade-up card-lift group rounded-2xl border border-zig-border bg-zig-surface/40 p-6 hover:border-zig-orange/30"
-              style={{ ['--index' as string]: 1 }}
+              className="card-lift group rounded-2xl border border-zinc-700 bg-[#161626] p-6 transition-all hover:border-zinc-500 hover:bg-[#1a1a2e]"
             >
               <div className="flex items-start gap-4">
-                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zig-orange/10 text-zig-orange">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                  </svg>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zig-orange">
+                  <Terminal className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-zig-text-bright">从源码构建</h3>
-                  <p className="mt-1 text-sm text-zig-text-muted">CMake + Ninja 或 zig build，全平台支持</p>
+                  <h3 className="font-display text-lg font-bold text-zinc-100">
+                    从源码编译 Zig 编译器
+                  </h3>
+                  <p className="mt-1 text-xs sm:text-sm text-zinc-400">
+                    包含标准 CMake + Ninja、使用预构建 Zig 以及不使用 LLVM 的轻量 bootstrap 编译方法。
+                  </p>
                 </div>
               </div>
             </Link>
 
             <Link
               to="/contribute"
-              className="animate-fade-up card-lift group rounded-2xl border border-zig-border bg-zig-surface/40 p-6 hover:border-zig-orange/30"
-              style={{ ['--index' as string]: 2 }}
+              className="card-lift group rounded-2xl border border-zinc-700 bg-[#161626] p-6 transition-all hover:border-zinc-500 hover:bg-[#1a1a2e]"
             >
               <div className="flex items-start gap-4">
-                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zig-orange/10 text-zig-orange">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zig-orange">
+                  <Code2 className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-zig-text-bright">参与贡献</h3>
-                  <p className="mt-1 text-sm text-zig-text-muted">编写项目、撰写文章或提交补丁</p>
+                  <h3 className="font-display text-lg font-bold text-zinc-100">
+                    参与 Zig 社区与开源贡献
+                  </h3>
+                  <p className="mt-1 text-xs sm:text-sm text-zinc-400">
+                    了解贡献者友好的 Issue 标签、测试套件运行方式以及 Zig 软件基金会捐助渠道。
+                  </p>
                 </div>
               </div>
             </Link>
@@ -221,34 +320,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Call to Action ── */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="animate-fade-up relative overflow-hidden rounded-2xl border border-zig-border bg-zig-surface/30 p-10 sm:p-16" style={{ ['--index' as string]: 0 }}>
-          <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-zig-orange to-zig-orange-dark" />
-          <div className="absolute right-10 top-0 -z-10 h-40 w-80 rounded-full bg-zig-orange/8 blur-[80px]" />
-          <div className="max-w-xl">
-            <h2 className="font-display text-3xl font-bold text-zig-text-bright sm:text-4xl">
-              准备好开始了吗
+      {/* ── Call to Action Banner ── */}
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-3xl border border-zinc-700 bg-gradient-to-br from-[#18182a] via-[#141422] to-[#0f0f18] p-10 sm:p-16 shadow-2xl">
+          <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-zig-orange/15 blur-3xl pointer-events-none" />
+          <div className="relative max-w-2xl">
+            <h2 className="font-display text-3xl font-extrabold text-zinc-100 sm:text-4xl">
+              开启全新的系统编程体验
             </h2>
-            <p className="mt-3 text-zig-text-muted">
-              加入不断增长的 Zig 社区，开始用一种真正不同的方式思考编程。没有运行时开销，没有隐藏的行为——只有纯粹的掌控力。
+            <p className="mt-4 text-base leading-relaxed text-zinc-400">
+              拥抱没有未定义行为折磨、没有隐式开销陷阱的现代编程语言。加入全球不断壮大的 Zig 开发者生态。
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-wrap items-center gap-4">
               <a
                 href="https://ziglang.org/download/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-tactile rounded-xl bg-zig-orange px-7 py-3.5 text-sm font-semibold text-zig-bg shadow-lg shadow-zig-orange/15 transition-all hover:bg-zig-orange-light"
+                className="btn-tactile flex items-center gap-2 rounded-xl bg-zig-orange px-8 py-3.5 text-sm font-bold text-zinc-950 shadow-lg shadow-zig-orange/20 transition-all hover:bg-zig-orange-light"
               >
-                下载最新版本
+                <Download className="h-4 w-4" />
+                <span>下载 Zig 0.14 稳定版</span>
               </a>
               <a
-                href="https://ziglang.org/community/"
+                href="https://ziggit.dev/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-tactile rounded-xl border border-zig-border bg-zig-surface/50 px-7 py-3.5 text-sm font-semibold text-zig-text transition-all hover:border-zig-orange/40 hover:text-zig-text-bright"
+                className="btn-tactile flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800/80 px-8 py-3.5 text-sm font-semibold text-zinc-200 transition-all hover:border-zinc-500 hover:text-white"
               >
-                加入社区讨论
+                <span>访问 Ziggit 社区论坛 ↗</span>
               </a>
             </div>
           </div>
